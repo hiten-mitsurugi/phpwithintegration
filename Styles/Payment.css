@@ -1,0 +1,99 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(rgba(0,0,0,0.7), #b5354a);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background-color: #ee282800;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto; /* Add margin-top to create a gap */
+    padding: 20px;
+    background-color: #dee2e685;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    background-color:#dee2e685;
+}
+
+
+.table thead tr, th{
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.35px;
+    color: black;
+    background-color: #ee2828b5;
+    opacity: 1;
+    padding: 12px;
+    vertical-align: top;
+    border: 1px solid #dee2e685;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.623);
+    }
+    
+    tr:nth-child(odd) {
+        background-color: white;
+    }
+    
+
+img {
+    max-width: 100px;
+    height: auto;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+select, button {
+    margin-top: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: navy;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #313d49;
+}
+
+#total-cost {
+    margin-top: 20px;
+    font-weight: bold;
+}

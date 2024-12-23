@@ -1,0 +1,226 @@
+/* Ulist.css */
+
+/* Reset and Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), #b5354a);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.sdata-container {
+    padding: 0 10%;
+    margin: 40px;
+}
+
+.container {
+    max-width: 1000px; /* Adjusted width */
+    margin: 80px auto 20px auto;
+    padding: 20px;
+}
+
+.heading {
+    font-size: 40px;
+    text-align: center;
+    color: #f1f1f1;
+    margin-bottom: 40px;
+    margin-top: 30px;
+}
+
+/* Form Styles */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+.form-check-input {
+    margin-right: 5px;
+}
+
+.form-check-label {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.mb-3 {
+    margin-bottom: 20px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #ee282800;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar a {
+    display: block;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.navbar a.logout {
+    float: right;
+    font-size: 20px;
+}
+
+.navbar a.admin {
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.admin:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.navbar a.addproducts {
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.addproducts:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.navbar a.productlist {
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.productlist:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.navbar a.logout:hover {
+    background-color: #ee2828b5;
+}
+
+.navbar a.logout {
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+/* Table Styles */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    font-size: 14px;
+    letter-spacing: 0.35px;
+    font-weight: normal;
+    color: #f1f1f1;
+    background-color: #3c3f44;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #dee2e685;
+}
+
+th {
+    background-color: #ee2828;
+}
+
+td button {
+    display: block;
+    width: 100%;
+    height: 30px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.delete_btn {
+    background-color: red;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.623); /* Adjusted row background color */
+}
+
+tr:nth-child(odd) {
+    background-color: #3c3f44; /* Adjusted row background color */
+}
+
+/* Footer Styles */
+.sdata-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+/* Ulist.css */
+
+/* Reset and Global Styles */
+/* Your existing styles here */
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 80%;
+    max-height: 80%;
+    overflow: auto;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.modal-body-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+/* Media Query for Small Devices */
+@media (max-width: 576px) {
+    th, td {
+        font-size: 12px;
+    }
+}

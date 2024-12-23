@@ -1,0 +1,214 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #b5354a;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 80px auto 20px auto;
+    padding: 20px;
+    display: table;
+    width: 100%;
+}
+
+h1 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/* Form Styles */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-check-input {
+    margin-right: 5px;
+}
+
+.form-check-label {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.btn {
+    background-color: #001f3f; /* Navy Blue */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+.btn:hover {
+    background-color: #003366; /* Darker Navy Blue */
+}
+
+.mb-3 {
+    margin-bottom: 20px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #ee282800;
+    overflow: hidden;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure the navbar appears on top of other elements */
+}
+
+.navbar a {
+    display: block;
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.navbar a.dash{
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.admin:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.navbar a.dashboard {
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.dashboard:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.navbar a.shop {
+    margin-left: 20px;
+    border-radius: 10px;
+}
+
+.navbar a.shop:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+
+.navbar a.logout {
+    float: right;
+}
+
+/* Table Styles */
+table {
+    border-collapse: collapse; /* Collapse border spacing */
+    width: 100%;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid transparent; /* Transparent border */
+}
+
+th {
+    background-color: #001f3f; /* Navy Blue */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #dbe4eb; /* Light Blue */
+}
+
+tr:nth-child(odd) {
+    background-color: #bfd7e2; /* Dark Blue */
+}
+
+/* Button Styles */
+.btn {
+    background-color: #001f3f; /* Navy Blue */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #003366; /* Darker Navy Blue */
+}
+
+/* Footer Styles */
+.sdata-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 576px) {
+    .sdata-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Initially hide the modal */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background overlay */
+    z-index: 9999; /* Ensure the modal appears on top of other elements */
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+    max-width: 80%; /* Adjust the width of the modal content */
+    max-height: 80%; /* Adjust the height of the modal content */
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.modal-body-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Adjust the size of the product images */
+table img {
+    max-width: 80px; /* Set the maximum width */
+    max-height: 80px; /* Set the maximum height */
+}

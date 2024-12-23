@@ -1,0 +1,283 @@
+/* CSS Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  }
+
+.register-container {
+  /* From https://css.glass */
+background: rgba(255, 255, 255, 0.58);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(9.1px);
+-webkit-backdrop-filter: blur(9.1px);
+border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 800px; /* Adjust the width to your desired size */
+  margin: auto; /* Center the container horizontally */
+  max-height: 550px; /* Set maximum height */
+  overflow-y: auto; /* Enable vertical scroll if content exceeds the height */
+}
+
+/* Add custom CSS classes to override Bootstrap styles */
+.custom-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-center label {
+  margin-bottom: 0; /* Remove bottom margin for the label */
+}
+
+/* Styles for buttons in registration form */
+.submit-button,
+.reset-button {
+  width: 48%;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.reset-button {
+  background-color: #dc3545; /* Change color for reset button */
+  color: #fff;
+}
+
+.reset-button:hover {
+  background-color: #c82333; /* Change color for reset button on hover */
+}
+
+/* Additional styling */
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.center-checkbox {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.center-checkbox .input-group {
+  display: inline-block;
+}
+
+.center-checkbox input[type="checkbox"],
+.center-checkbox label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.center-text {
+  text-align: center;
+  margin-top: 10px;
+}
+/* CSS Styles */
+/* Add custom CSS classes to override Bootstrap styles */
+.custom-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-center label {
+  margin-bottom: 0; /* Remove bottom margin for the label */
+}
+.custom-modal .modal-dialog {
+  margin: 0 auto;
+}
+
+.custom-modal .modal-content {
+  width: 100%;
+  max-width: 800px; /* Adjust the maximum width of the modal */
+  margin: 0 auto; /* Center the modal horizontally */
+  border: none;
+  border-radius: 0; /* Remove border radius */
+}
+
+.custom-modal .modal-body-container {
+  max-height: calc(200vh - 400px); /* Set the maximum height for the modal body container */
+  height: 100%;
+  overflow-y: auto; /* Enable vertical scroll if content exceeds the height */
+}
+
+.custom-modal .modal-body {
+  padding: 20px;
+}
+
+.custom-modal h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.custom-modal p {
+  margin-bottom: 15px; /* Add space between paragraphs */
+  line-height: 1.6; /* Improve readability by adjusting line height */
+  text-align: justify; /* Justify the text for better alignment */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Styles for buttons in registration form */
+.submit-button {
+  width: 48%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.reset-button {
+  width: 48%;
+  padding: 10px;
+  background-color: #dc3545; /* Change color for reset button */
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #c82333; /* Change color for reset button on hover */
+}
+
+.login-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  width: 450px; /* Adjust the width to your desired size */
+  margin: auto; /* Center the container horizontally */
+  max-height: 550px; /* Set maximum height */
+  overflow-y: auto; /* Enable vertical scroll if content exceeds the height */
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input, 
+.input-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.input-group input[type="checkbox"] {
+  display: inline;
+  width: auto;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  width: 48%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.extra-options {
+  margin-top: 15px;
+}
+
+.extra-options a {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: #007bff;
+  margin-top: 10px;
+}
+
+.extra-options a:hover {
+  text-decoration: underline;
+}
+.resume-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.resume-container h1 {
+  text-align: center;
+}
+
+.resume-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.resume-container ul li {
+  margin-bottom: 10px;
+}
+
+.resume-container ul li:before {
+  content: "\2022"; /* Bullet point */
+  color: #007bff; /* Bullet point color */
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+.php-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}

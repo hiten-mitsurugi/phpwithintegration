@@ -1,0 +1,309 @@
+CREATE ROLE admin WITH LOGIN PASSWORD 'Password123!';
+CREATE ROLE super_admin WITH LOGIN PASSWORD 'Password123!';
+CREATE ROLE customer WITH LOGIN PASSWORD 'Password123!';
+
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO super_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO super_admin;
+
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    role_id INT NOT NULL, -- Foreign key referencing `roles` table
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    company_name VARCHAR(100),
+    contact_number VARCHAR(15),
+    first_name VARCHAR(50),
+    middle_name VARCHAR(50),
+    last_name VARCHAR(50),
+    address_id INT, -- Foreign key referencing `addresses` table
+    gender VARCHAR(10)
+);
+
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(20) NOT NULL UNIQUE -- Values: 'admin', 'super_admin', 'customer'
+);
+
+CREATE TABLE addresses (
+    address_id SERIAL PRIMARY KEY,
+    region VARCHAR(100),
+    province VARCHAR(100),
+    city VARCHAR(100),
+    barangay VARCHAR(100)
+);
+
+INSERT INTO roles (role_name) VALUES ('admin'), ('seller'), ('customer');
+
+ALTER TABLE users 
+ADD CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(role_id);
+
+ALTER TABLE users 
+ADD CONSTRAINT fk_address FOREIGN KEY (address_id) REFERENCES addresses(address_id);
+
+ALTER TABLE users 
+ALTER COLUMN role_id SET DEFAULT 3;
+
+//register function
+CREATE OR REPLACE FUNCTION register_user(
+    p_username VARCHAR,
+    p_email VARCHAR,
+    p_password VARCHAR,
+    p_contact_number VARCHAR,
+    p_first_name VARCHAR,
+    p_middle_name VARCHAR,
+    p_last_name VARCHAR,
+    p_region VARCHAR,
+    p_province VARCHAR,
+    p_city VARCHAR,
+    p_barangay VARCHAR,
+    p_gender VARCHAR
+) RETURNS TEXT AS $$
+DECLARE
+    v_address_id INTEGER;
+    v_role_id INTEGER;
+BEGIN
+    -- Check if username already exists
+    IF EXISTS (SELECT 1 FROM users WHERE username = p_username) THEN
+        RETURN 'Username already exists';
+    END IF;
+
+    -- Check if email already exists
+    IF EXISTS (SELECT 1 FROM users WHERE email = p_email) THEN
+        RETURN 'Email already exists';
+    END IF;
+
+    -- Insert address and get address_id
+    INSERT INTO addresses (region, province, city, barangay)
+    VALUES (p_region, p_province, p_city, p_barangay)
+    RETURNING address_id INTO v_address_id;
+
+    -- Get role_id for 'customer'
+    SELECT role_id INTO v_role_id FROM roles WHERE role_name = 'customer';
+
+    -- Insert new user
+    INSERT INTO users (username, email, password, contact_number, first_name, middle_name, last_name, address_id, gender, role_id)
+    VALUES (p_username, p_email, p_password, p_contact_number, p_first_name, p_middle_name, p_last_name, v_address_id, p_gender, v_role_id);
+
+    RETURN 'Congratulations! You are successfully registered';
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN 'Registration failed: ' || SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+//Create a function to update the updated_at column
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+//Create a trigger to automatically update the updated_at column
+CREATE TRIGGER update_user_modtime
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION update_modified_column();
+
+//login view
+CREATE VIEW user_roles_view AS
+SELECT 
+    u.user_id, 
+    u.username,
+    u.role_id, 
+    r.role_name,
+    u.email,
+    u.password -- Include password for authentication purposes
+FROM users u
+INNER JOIN roles r ON u.role_id = r.role_id;
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    seller_id INT REFERENCES users(user_id),  -- Foreign key to the users table (seller/admin)
+    product_name VARCHAR(100) NOT NULL,         -- Name of the product
+    description TEXT,                           -- Description of the product
+    quantity INT DEFAULT 0,                     -- Quantity of the product in stock
+    capital_price DECIMAL(10, 2),               -- Cost price of the product
+    selling_price DECIMAL(10, 2),               -- Selling price of the product
+    image_url VARCHAR(255),                     -- URL of the product image
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Time when the product was added
+   );
+
+
+
+
+
+CREATE TABLE cart_items (
+    cart_item_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),  -- User who added the item to the cart
+    product_id INT REFERENCES products(product_id),  -- The product added to the cart
+    quantity INT DEFAULT 1,  -- Quantity added to the cart
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),  -- User who placed the order
+    total_amount DECIMAL(10, 2),  -- Total price of the order
+    order_status VARCHAR(50) DEFAULT 'pending',  -- Order status (pending, completed, etc.)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id),  -- Order that this item belongs to
+    product_id INT REFERENCES products(product_id),  -- The product in the order
+    seller_id INT REFERENCES users(user_id),  -- Seller of the product
+    quantity INT DEFAULT 1,  -- Quantity of the product
+    price DECIMAL(10, 2),  -- Price of the product at the time of purchase
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE seller_sales (
+    seller_id INT REFERENCES users(user_id),  -- Seller
+    total_sales DECIMAL(10, 2) DEFAULT 0,  -- Total sales amount for this seller
+    total_profit DECIMAL(10, 2) DEFAULT 0, -- Total profit for this seller
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE ROLE admin;
+CREATE ROLE seller;
+CREATE ROLE customer;
+
+CREATE USER admin_user WITH LOGIN PASSWORD 'Password123!';
+CREATE USER seller_user WITH LOGIN PASSWORD 'Password123!';
+CREATE USER customer_user WITH LOGIN PASSWORD 'Password123!';
+
+GRANT admin TO admin_user;
+GRANT seller TO seller_user;
+GRANT customer TO customer_user;
+
+GRANT CONNECT ON DATABASE project TO customer_user;
+GRANT CONNECT ON DATABASE project TO admin_user;
+GRANT CONNECT ON DATABASE project TO seller_user;
+
+GRANT INSERT, UPDATE, DELETE ON products TO seller;
+-- Enable Row-Level Security (RLS) on the products table
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+
+
+
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+//view for user list in admin side
+CREATE VIEW userlist AS
+SELECT 
+    u.user_id	
+    r.role_name, 
+    u.first_name || '  ' || u.last_name AS full_name,   
+    u.contact_number, 
+    a.region, 
+    a.province, 
+    a.city, 
+    a.barangay
+FROM users u
+JOIN roles r ON u.role_id = r.role_id
+LEFT JOIN addresses a ON u.address_id = a.address_id
+ORDER BY u.user_id ASC;
+
+
+GRANT ALL PRIVILEGES ON DATABASE project TO admin_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin_user;
+
+
+CREATE OR REPLACE VIEW user_show_view AS
+SELECT u.first_name, u.last_name, u.email, u.contact_number, 
+       a.region, a.province, a.city, a.barangay, u.user_id
+FROM users u
+JOIN addresses a ON u.address_id = a.address_id;
+
+GRANT SELECT ON user_show_view TO admin_user;
+
+
+
+
+CREATE VIEW seller_user_info AS
+SELECT 
+    u.user_id, 
+    r.role_name, 
+    u.first_name, 
+    u.last_name
+FROM users u
+JOIN roles r ON u.role_id = r.role_id;
+
+GRANT SELECT ON seller_user_info TO seller_user;
+
+CREATE VIEW seller_products_view AS
+SELECT 
+    p.product_id, 
+    p.product_name, 
+    p.selling_price, 
+    p.capital_price, 
+    p.description, 
+    p.quantity, 
+    p.image_url,
+    p.seller_id
+FROM products p;
+GRANT SELECT ON seller_products_view TO seller_user;
+
+ALTER TABLE products ADD COLUMN status_id INT DEFAULT 2;
+
+
+CREATE TABLE product_status (
+    status_id SERIAL PRIMARY KEY,
+    status_name VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE products 
+ALTER COLUMN status_id SET DEFAULT 3;
+
+ALTER TABLE products
+ADD CONSTRAINT fk_status
+FOREIGN KEY (status_id) REFERENCES product_status(status_id);
+
+
+select * from orders;
+
+CREATE TABLE order_status (
+    status_id SERIAL PRIMARY KEY,
+    status_name VARCHAR(50) NOT NULL
+);
+
+INSERT INTO product_status (status_name) VALUES ('approved'), ('pending');
+
+ALTER TABLE products
+ADD CONSTRAINT fk_status
+FOREIGN KEY (status_id) REFERENCES pstatus(status_id);
+
+ALTER TABLE products 
+ALTER COLUMN status_id SET DEFAULT 2;
+
+CREATE TABLE order_status (
+    status_id SERIAL PRIMARY KEY,
+    status_name VARCHAR(50) NOT NULL
+);
+
+-- Insert the statuses
+INSERT INTO order_status (status_name) VALUES
+('paid'),
+('shipped');
+
+ALTER TABLE orders
+ADD COLUMN status_id INT REFERENCES order_status(status_id);
+
+ALTER TABLE orders
+DROP COLUMN order_status;
+
+
+
+
+

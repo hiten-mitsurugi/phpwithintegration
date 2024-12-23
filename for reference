@@ -1,0 +1,329 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to the login page if not logged in
+    header("Location: index.php");
+    exit();
+}
+
+// Logout functionality
+if (isset($_POST['logout'])) {
+    // Unset all of the session variables
+    $_SESSION = array();
+
+    // Destroy the session
+    session_destroy();
+
+    // Redirect to the login page
+    header("Location: index.php");
+    exit();
+}
+include 'connects.php';
+
+// Retrieve logged-in user's information from the database
+$user_id = $_SESSION['user_id'];
+// Retrieve product data from the database
+$query_products = "SELECT * FROM active_products_view WHERE status_id = $1 ORDER BY product_name ASC";
+$result_products = pg_query_params($connect, $query_products, array(1)); // 1 is the value for status_id
+
+// Retrieve user data from the database $query_view = "SELECT * FROM active_products_view";
+$query = "SELECT * FROM users WHERE user_id = $1";
+$result = pg_query_params($connect, $query, array($user_id));
+$user = pg_fetch_assoc($result);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./Styles/Shop.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>SHOPPING</title>
+</head>
+<body>
+<section class="main-home">
+    <!-- Video Background -->
+    <video autoplay muted loop id="video-bg">
+        <source src="./Assets/bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <header>
+        <h1>Footprints & Fancy</h1>
+        <!-- Nav Icon -->
+        <div class="nav-icon">
+            <a href="dashboard.php"><i class='bx bxs-detail'></i></a>
+            <a href="user_profile.php"><i class='bx bx-user'></i></a>
+            <div class="icon-cart">
+                <a href="#"><i class='bx bx-cart'></i></a>
+                <span>0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-text">
+        <h5>Spring Shoe Collection</h5>
+        <h1>Elevate Your Style with Our Exquisite Collection</h1>
+        <p>Discover the Perfect Pair for Every Trend</p>
+        <a href="#trending" class="main-btn">Shop now <i class='bx bx-shopping-bag'></i></a>
+    </div>
+</section>
+
+<div class="trending" id="trending">
+    <h5>Trendings</h5>
+</div>
+
+
+<!-- List of Products -->
+<div class="listProduct">
+    <?php
+    // Loop through each product with status_id = 1 and display its information
+    while ($row = pg_fetch_assoc($result_products)) {
+        ?>
+        <div class="item">
+            <img src="assets/product/<?php echo $row['image_url']; ?>" alt="">
+            <div class="detailscontainer">
+                <h2><?php echo $row['product_name']; ?></h2>
+                <h5>$<?php echo $row['selling_price']; ?></h5>
+            </div>
+            <button class="addCart" data-product-id="<?php echo $row['product_id']; ?>">Add To Cart</button>
+        </div>
+        <?php
+    }
+    ?>
+</div>
+
+
+
+<div class="cartTab" id="cartTab">
+    <button class="close">
+        <i class='iconClose bx bx-left-arrow-alt'></i>
+        <h1>Shopping Cart</h1>
+    </button>
+    <div class="listCart">
+        <!-- Cart items will be dynamically added here -->
+    </div>
+    <div class="totalCartPrice">Total: $0.00</div>
+    <div class="btn">
+        <button class="checkOut">CHECK OUT</button>
+    </div>
+</div>
+
+<!-- Product Modal -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const cartIcon = document.querySelector('.icon-cart');
+    const cartTab = document.querySelector('.cartTab');
+    const closeButton = document.querySelector('.close');
+    const checkoutButton = document.querySelector('.checkOut');
+
+    cartIcon.addEventListener('click', function() {
+        cartTab.style.width = "450px";
+    });
+
+    closeButton.addEventListener('click', function() {
+        cartTab.style.width = "0px";
+    });
+
+    // ... (keep existing event listeners for cartIcon, closeButton, and checkoutButton)
+
+    const addToCartButtons = document.querySelectorAll('.addCart');
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.parentNode.querySelector('h2').textContent;
+            const productPrice = parseFloat(this.parentNode.querySelector('h5').textContent.replace('$', ''));
+            const productImage = this.parentNode.querySelector('img').src;
+
+            // Show toast notification
+            Toastify({
+                text: "Added To Cart Successfully",
+                duration: 2000,
+                // ... (keep existing Toastify options)
+            }).showToast();
+
+            // Retrieve existing cart data from local storage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Check if the product is already in the cart
+            const existingProductIndex = cart.findIndex(item => item.id === productId);
+
+            if (existingProductIndex !== -1) {
+                // Product already exists in the cart, update quantity
+                cart[existingProductIndex].quantity++;
+            } else {
+                // Product doesn't exist in the cart, add it
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1,
+                    image_url: productImage
+                });
+            }
+
+            // Save updated cart data to local storage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update the UI
+            updateCartUI();
+        });
+    });
+
+    // Function to update the cart UI
+    function updateCartUI() {
+    const listCart = document.querySelector('.listCart');
+    listCart.innerHTML = ''; // Clear the cart list
+
+    // Retrieve cart data from local storage
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Update the span to display the total number of items in the cart
+    const cartCount = document.querySelector('.icon-cart span');
+    cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+    // Populate the cart items
+    cart.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('item');
+
+        // Create image element for the product image
+        const image = document.createElement('img');
+        image.src = item.image_url;
+        image.alt = item.name;
+
+        const productName = document.createElement('span');
+        productName.textContent = item.name;
+        productName.classList.add('nameHeader');
+
+        const itemContainer = document.createElement('div');
+        itemContainer.classList.add('item-container');
+
+        const decrementButton = document.createElement('button');
+        decrementButton.textContent = '-';
+        decrementButton.classList.add('decrement');
+        decrementButton.dataset.itemId = item.id;
+
+        const productQuantity = document.createElement('span');
+        productQuantity.textContent = item.quantity;
+        productQuantity.classList.add('quantityheader');
+
+        const incrementButton = document.createElement('button');
+        incrementButton.textContent = '+';
+        incrementButton.classList.add('increment');
+        incrementButton.dataset.itemId = item.id;
+
+        const productPrice = document.createElement('span');
+        productPrice.textContent = '₱' + (item.price * item.quantity).toFixed(2);
+        productPrice.classList.add('priceheader');
+
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('remove');
+        removeButton.dataset.productId = item.id;
+
+        const iconElement = document.createElement('i');
+        iconElement.classList.add('bx', 'bxs-trash');
+
+        removeButton.appendChild(iconElement);
+
+        itemContainer.appendChild(decrementButton);
+        itemContainer.appendChild(productQuantity);
+        itemContainer.appendChild(incrementButton);
+
+        cartItem.appendChild(image);
+        cartItem.appendChild(productName);
+        cartItem.appendChild(itemContainer);
+        cartItem.appendChild(productPrice);
+        cartItem.appendChild(removeButton);
+
+        listCart.appendChild(cartItem);
+    });
+
+    // Update total price
+    updateTotalPrice();
+}
+
+    // Function to remove item from cart
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove')) {
+            const productId = event.target.getAttribute('data-product-id');
+
+            // Retrieve cart data from local storage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Remove the item from cart
+            cart = cart.filter(item => item.id !== productId);
+
+            // Save updated cart data to local storage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update the UI
+            updateCartUI();
+        } else if (event.target.classList.contains('increment')) {
+            const itemId = event.target.dataset.itemId;
+            handleQuantityChange(itemId, 1);
+        } else if (event.target.classList.contains('decrement')) {
+            const itemId = event.target.dataset.itemId;
+            handleQuantityChange(itemId, -1);
+        }
+    });
+
+    // Function to handle incrementing and decrementing quantity
+    function handleQuantityChange(itemId, change) {
+        // Retrieve cart data from local storage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Find the item in the cart
+        const itemIndex = cart.findIndex(item => item.id === itemId);
+
+        if (itemIndex !== -1) {
+            // Update the quantity
+            cart[itemIndex].quantity += change;
+
+            // Ensure quantity doesn't go below 1
+            if (cart[itemIndex].quantity < 1) {
+                cart[itemIndex].quantity = 1;
+            }
+
+            // Save updated cart data to local storage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update the UI
+            updateCartUI();
+        }
+    }
+
+    // Function to calculate and display total price
+    function updateTotalPrice() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = 0;
+        cart.forEach(item => {
+            totalPrice += item.price * item.quantity;
+        });
+        document.querySelector('.totalCartPrice').textContent = 'Total: ₱' + totalPrice.toFixed(2);
+    }
+
+    // Load cart data from local storage when the page is loaded
+    updateCartUI();
+});
+
+
+</script>
+
+
+</body>
+
+</html>
